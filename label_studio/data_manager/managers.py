@@ -437,7 +437,7 @@ class TaskQuerySet(models.QuerySet):
         from projects.models import Project
 
         queryset = self
-
+        print('QUERYSET IN CLASS', queryset)
         if prepare_params is None:
             return queryset
 
@@ -445,7 +445,6 @@ class TaskQuerySet(models.QuerySet):
         request = prepare_params.request
         queryset = apply_filters(queryset, prepare_params.filters, project, request)
         queryset = apply_ordering(queryset, prepare_params.ordering, project, request)
-
         if not prepare_params.selectedItems:
             return queryset
 
@@ -622,6 +621,11 @@ class PreparedTaskManager(models.Manager):
         fields_for_filter_ordering = get_fields_for_filter_ordering(prepare_params)
         queryset = self.annotate_queryset(queryset, fields_for_evaluation=fields_for_filter_ordering, request=request)
         return queryset.prepared(prepare_params=prepare_params)
+
+    def only_filtered_simple(self, project_id):
+        print("MANAGERS/ONLY_FILTERED_SIMPLE Project id is", project_id, "of type", type(project_id))
+        queryset = TaskQuerySet(self.model).filter(project=project_id)
+        return queryset
 
 
 class TaskManager(models.Manager):

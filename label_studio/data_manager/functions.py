@@ -327,7 +327,15 @@ def get_prepare_params(request, project):
 
 def get_prepared_queryset(request, project):
     prepare_params = get_prepare_params(request, project)
+    print("PREPARE PARAMS:", prepare_params)
     queryset = Task.prepared.only_filtered(prepare_params=prepare_params)
+    return queryset
+
+def get_prepared_queryset_simple(request, project):
+    print('get_prepared_queryset_simple/ request:',request, 'project', project)
+    prepare_params = get_prepare_params(request, project)
+    print("PREPARE PARAMS SIMPLE:", prepare_params)
+    queryset = Task.prepared.only_filtered_simple(int(prepare_params.project))
     return queryset
 
 

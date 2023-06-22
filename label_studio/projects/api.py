@@ -43,7 +43,8 @@ from core.utils.io import find_dir, find_file, read_yaml
 from core.filters import ListFilter
 from projects.functions.stream_history import get_label_stream_history
 
-from data_manager.functions import get_prepared_queryset, filters_ordering_selected_items_exist
+from data_manager.functions import get_prepared_queryset, filters_ordering_selected_items_exist, get_prepared_queryset_simple
+
 from data_manager.models import View
 
 logger = logging.getLogger(__name__)
@@ -260,7 +261,11 @@ class ProjectNextTaskAPI(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         project = self.get_object()
         dm_queue = filters_ordering_selected_items_exist(request.data)
+        print("PROJECT API CALL Request: ", request, "Project:", project)
+
+
         prepared_tasks = get_prepared_queryset(request, project)
+
 
         next_task, queue_info = get_next_task(request.user, prepared_tasks, project, dm_queue)
 

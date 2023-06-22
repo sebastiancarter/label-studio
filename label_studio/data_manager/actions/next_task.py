@@ -4,22 +4,26 @@ import logging
 import subprocess
 import os
 
+
 from rest_framework.exceptions import NotFound
-from data_manager.functions import filters_ordering_selected_items_exist
+from data_manager.functions import filters_ordering_selected_items_exist, get_prepared_queryset_simple
 from projects.functions.next_task import get_next_task
 from core.permissions import all_permissions
 from tasks.serializers import NextTaskSerializer
 
+from tasks.models import Task
 
 logger = logging.getLogger(__name__)
 
 
 def create_new_task():
-    print("BEGIN CREATE NEW PROJECT")
 
+    print("BEGIN CREATE NEW PROJECT")
     python_file = 'C:\\Users\\nsf2023\\repos\\landcoveranalysis\\getJsonWithId.py'
+    annotatedPath = "C:\\Users\\nsf2023\\repos\\annotation\\"
+    imagePath = "C:\\Users\\nsf2023\\repos\\imagePath\\"
     # Call the function in Python file as a subprocess
-    os.system(f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file} C:\\Users\\nsf2023\\repos\\completedPath\\")
+    os.system(f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file} {annotatedPath} {imagePath} C:\\Users\\nsf2023\\repos\\completedPath\\")
     # create_new_task_in_file {str(project.id)}")
 
 
@@ -31,15 +35,32 @@ def next_task(project, queryset, **kwargs):
     :param kwargs: arguments from api request
     """
 
+    print('NEXT TASK project:',project,'as type', type(project))
+    #print("Functions and methods:", dir(project))
+    print('LABEL CONFIG: ', project.label_config)
     request = kwargs['request']
     dm_queue = filters_ordering_selected_items_exist(request.data)
+
+    print("NEXT TASK: request: ", request)
+    print("NEXT TASK: dm_queue: ", dm_queue)
     next_task, queue_info = get_next_task(request.user, queryset, project, dm_queue)
-    print("QUERYSET", queryset)
+
+    print("INITIAL QUERYSET: ", queryset)
+    print(type(queryset))
+    print('QUEUE INFO: ', queue_info)
+    # a = 1/0  # break here :)
     if next_task is None:
-        # create task if none is found
+        # inputs task formed from getJsonWithId
         create_new_task()
 
+
+        queryset = Task.prepared.only_filtered_simple(project.id) # placeholder hardcoded value since project is
+                                                                         # a class object
+        print('ONLY FILTERED SIMPLE QUERY', queryset) # adds new task to queryset..
+
         next_task, queue_info = get_next_task(request.user, queryset, project, dm_queue)
+        print("NEXT TASK TO ANNOTATE:", next_task)
+
         # raise NotFound(
         #      f' There are still some tasks to complete for the user={request.user}, '
         #      f'but they seem to be locked by another user.')

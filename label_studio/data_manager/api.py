@@ -20,7 +20,7 @@ from projects.models import Project
 from projects.serializers import ProjectSerializer
 from tasks.models import Task, Annotation, Prediction
 
-from data_manager.functions import get_prepared_queryset, evaluate_predictions, get_prepare_params
+from data_manager.functions import get_prepared_queryset, get_prepared_queryset_simple, evaluate_predictions, get_prepare_params
 from data_manager.models import View
 from data_manager.managers import get_fields_for_evaluation
 from data_manager.serializers import ViewSerializer, DataManagerTaskSerializer, ViewResetSerializer
@@ -321,7 +321,8 @@ class ProjectActionsAPI(APIView):
         project = generics.get_object_or_404(Project, pk=pk)
         self.check_object_permissions(request, project)
 
-        queryset = get_prepared_queryset(request, project)
+        print("DATA MANAGER API CALL Request: ", request, "Project:", project)
+        queryset = get_prepared_queryset_simple(request, project)
 
         # wrong action id
         action_id = request.GET.get('id', None)
