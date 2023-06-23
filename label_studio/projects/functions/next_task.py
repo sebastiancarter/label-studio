@@ -253,11 +253,11 @@ def get_task_from_qs_with_sampling(not_solved_tasks, user_solved_tasks_array, pr
 
 def get_next_task(user, prepared_tasks, project, dm_queue, assigned_flag=None):
     logger.debug(f'get_next_task called. user: {user}, project: {project}, dm_queue: {dm_queue}')
-    print('--GET NEXT TASK--')
-    print('PREPARED_TASK: ', prepared_tasks)
-    print('PROJECT', project)
-    print('DM_QUEUE', dm_queue)
-    print()
+    # print('--GET NEXT TASK--')
+    # print('PREPARED_TASK: ', prepared_tasks)
+    # print('PROJECT', project)
+    # print('DM_QUEUE', dm_queue)
+    # print()
     with conditional_atomic():
         next_task = None
         use_task_lock = True
@@ -266,20 +266,20 @@ def get_next_task(user, prepared_tasks, project, dm_queue, assigned_flag=None):
         not_solved_tasks, user_solved_tasks_array, queue_info = get_not_solved_tasks_qs(
             user, project, prepared_tasks, assigned_flag, queue_info
         )
-        print('NOT SOLVED TASKS: ', not_solved_tasks)
-        print('USER_SOLVED_TASKS_ARRAY: ',user_solved_tasks_array)
-        print('QUEUE INFO: ', queue_info)
+        # print('NOT SOLVED TASKS: ', not_solved_tasks)
+        # print('USER_SOLVED_TASKS_ARRAY: ',user_solved_tasks_array)
+        # print('QUEUE INFO: ', queue_info)
 
         if not dm_queue:
-            print('--IF NOT DM_QUEUE--')
+            # print('--IF NOT DM_QUEUE--')
             next_task, use_task_lock, queue_info = get_next_task_without_dm_queue(
                 user, project, not_solved_tasks, assigned_flag
             )
-            print('NEXT TASK: ', next_task)
-            print('QUEUE INFO: ', queue_info)
+            # print('NEXT TASK: ', next_task)
+            # print('QUEUE INFO: ', queue_info)
 
         if flag_set('fflag_fix_back_lsdv_4523_show_overlap_first_order_27022023_short'):
-            print('--FLAG SET--')
+            # print('--FLAG SET--')
             # show tasks with overlap > 1 first
             if not next_task and project.show_overlap_first:
                 # don't output anything - just filter tasks with overlap
@@ -287,21 +287,21 @@ def get_next_task(user, prepared_tasks, project, dm_queue, assigned_flag=None):
                 _, tasks_with_overlap = _try_tasks_with_overlap(not_solved_tasks)
                 queue_info += 'Show overlap first'
                 next_task, queue_info = get_task_from_qs_with_sampling(tasks_with_overlap, user_solved_tasks_array, prepared_tasks, user, project, queue_info)
-                print('NEXT TASK: ', next_task)
-                print('QUEUE INFO: ', queue_info)
+                # print('NEXT TASK: ', next_task)
+                # print('QUEUE INFO: ', queue_info)
 
         if not next_task:
-            print('--IF NOT NEXT_TASK--')
+            # print('--IF NOT NEXT_TASK--')
             if dm_queue:
                 queue_info += (' & ' if queue_info else '') + 'Data manager queue'
                 logger.debug(f'User={user} tries sequence sampling from prepared tasks')
                 next_task = not_solved_tasks.first()
-                print('DM_QUEUE, NEXT TASK: ', next_task)
+                # print('DM_QUEUE, NEXT TASK: ', next_task)
             else:
-                print('ELSE')
+                # print('ELSE')
                 next_task, queue_info = get_task_from_qs_with_sampling(not_solved_tasks, user_solved_tasks_array, prepared_tasks, user, project, queue_info)
-                print('NEXT TASK: ', next_task)
-                print('QUEUE INFO: ', queue_info)
+                # print('NEXT TASK: ', next_task)
+                # print('QUEUE INFO: ', queue_info)
 
 
         next_task, queue_info = postponed_queue(next_task, prepared_tasks, project, user, queue_info)
@@ -309,7 +309,7 @@ def get_next_task(user, prepared_tasks, project, dm_queue, assigned_flag=None):
         next_task, queue_info = skipped_queue(next_task, prepared_tasks, project, user, queue_info)
 
         if next_task and use_task_lock:
-            print('IF NEXT_TASK AND USE_TASK_LOCK')
+            # print('IF NEXT_TASK AND USE_TASK_LOCK')
             # set lock for the task with TTL 3x time more then current average lead time (or 1 hour by default)
             next_task.set_lock(user)
 
@@ -320,7 +320,7 @@ def get_next_task(user, prepared_tasks, project, dm_queue, assigned_flag=None):
 
         # debug for critical overlap issue
         if next_task and flag_set('fflag_fix_back_dev_4185_next_task_additional_logging_long', user):
-            print('CRITICAL OVERLAP ISSUES')
+
             try:
                 count = next_task.annotations.filter(was_cancelled=False).count()
                 task_overlap_reached = count >= next_task.overlap
@@ -360,9 +360,9 @@ def get_next_task(user, prepared_tasks, project, dm_queue, assigned_flag=None):
                 pass
 
         add_stream_history(next_task, user, project)
-        print('--END OF GET_NEXT_TASK--')
-        print('NEXT TASK: ', next_task)
-        print('QUEUE INFO: ', queue_info)
+        # print('--END OF GET_NEXT_TASK--')
+        # print('NEXT TASK: ', next_task)
+        # print('QUEUE INFO: ', queue_info)
         return next_task, queue_info
 
 

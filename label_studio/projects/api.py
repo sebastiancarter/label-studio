@@ -261,7 +261,6 @@ class ProjectNextTaskAPI(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         project = self.get_object()
         dm_queue = filters_ordering_selected_items_exist(request.data)
-        print("PROJECT API CALL Request: ", request, "Project:", project)
 
 
         prepared_tasks = get_prepared_queryset(request, project)

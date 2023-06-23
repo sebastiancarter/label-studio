@@ -321,7 +321,7 @@ class ProjectActionsAPI(APIView):
         project = generics.get_object_or_404(Project, pk=pk)
         self.check_object_permissions(request, project)
 
-        print("DATA MANAGER API CALL Request: ", request, "Project:", project)
+        # print("DATA MANAGER API CALL Request: ", request, "Project:", project)
         queryset = get_prepared_queryset_simple(request, project)
 
         # wrong action id

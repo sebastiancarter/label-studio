@@ -437,7 +437,7 @@ class TaskQuerySet(models.QuerySet):
         from projects.models import Project
 
         queryset = self
-        print('QUERYSET IN CLASS', queryset)
+        #print('QUERYSET IN CLASS', queryset)
         if prepare_params is None:
             return queryset
 
@@ -623,7 +623,7 @@ class PreparedTaskManager(models.Manager):
         return queryset.prepared(prepare_params=prepare_params)
 
     def only_filtered_simple(self, project_id):
-        print("MANAGERS/ONLY_FILTERED_SIMPLE Project id is", project_id, "of type", type(project_id))
+        #print("MANAGERS/ONLY_FILTERED_SIMPLE Project id is", project_id, "of type", type(project_id))
         queryset = TaskQuerySet(self.model).filter(project=project_id)
         return queryset
 
