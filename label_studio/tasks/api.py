@@ -1,7 +1,7 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
 import logging
-
+import os
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
@@ -372,7 +372,19 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
     def delete_draft(self, draft_id, annotation_id):
         return AnnotationDraft.objects.filter(id=draft_id).delete()
 
+    # TODO fix this hard coded way to insert our python to ls
+    def updateXMLconfig(self):
+        python_file = 'C:\\Users\\nsf2023\\repos\\landcoveranalysis\\insertXML.py'
+        annotatedPath = "C:\\Users\\nsf2023\\repos\\completedPath\\"
+        imagePath = "C:\\Users\\nsf2023\\repos\\imagePath\\"
+        # Call the function in Python file as a subprocess
+        os.system(
+            f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file} {annotatedPath} {imagePath}")
+
     def perform_create(self, ser):
+
+        self.updateXMLconfig()
+
         task = self.get_parent_object()
         # annotator has write access only to annotations and it can't be checked it after serializer.save()
         user = self.request.user

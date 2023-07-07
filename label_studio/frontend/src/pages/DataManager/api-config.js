@@ -43,7 +43,7 @@ export const APIConfig = {
       path: (params) => {
         const pathBase = "/../tasks/:taskID/annotations";
         const isNewAnnotation = !isDefined(params.annotationID);
-
+        console.log('Skipped Task');
         return isNewAnnotation ? pathBase : `${pathBase}/:annotationID`;
       },
     },

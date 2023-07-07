@@ -22,7 +22,7 @@ all_permissions = AllPermissions()
 def propagate_annotations(project, queryset, **kwargs):
     request = kwargs['request']
     user = request.user
-    source_annotation_id = request.data.get('source_annotation_id')
+
     annotations = Annotation.objects.filter(project=project, id=source_annotation_id)
     if not annotations:
         raise DataManagerException(f'Source annotation {source_annotation_id} not found in the current project')

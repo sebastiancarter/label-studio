@@ -159,7 +159,7 @@ class TaskListAPI(generics.ListCreateAPIView):
     @staticmethod
     def get_task_serializer_context(request, project):
         all_fields = request.GET.get('fields', None) == 'all'  # false by default
-
+        print('GET TASK SERIALIZER with request: ', request, '\n')
         return {
             'resolve_uri': bool_from_request(request.GET, 'resolve_uri', True),
             'request': request,
