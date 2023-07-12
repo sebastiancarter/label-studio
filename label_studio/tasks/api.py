@@ -12,6 +12,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, viewsets, views
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
+from django.http import Http404
 
 from core.feature_flags import flag_set
 from core.permissions import ViewClassPermission, all_permissions
@@ -375,15 +377,10 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
     # TODO fix this hard coded way to insert our python to ls
     def updateXMLconfig(self):
         python_file = 'C:\\Users\\nsf2023\\repos\\landcoveranalysis\\insertXML.py'
-        annotatedPath = "C:\\Users\\nsf2023\\repos\\completedPath\\"
-        imagePath = "C:\\Users\\nsf2023\\repos\\imagePath\\"
         # Call the function in Python file as a subprocess
-        os.system(
-            f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file} {annotatedPath} {imagePath}")
+        os.system(f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file}")
 
     def perform_create(self, ser):
-
-        self.updateXMLconfig()
 
         task = self.get_parent_object()
         # annotator has write access only to annotations and it can't be checked it after serializer.save()
@@ -445,7 +442,9 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
 
         fill_history_annotation(user, task, annotation)
 
-        return annotation
+        self.updateXMLconfig()
+        return None
+        #return annotation
 
 
 class AnnotationDraftListAPI(generics.ListCreateAPIView):

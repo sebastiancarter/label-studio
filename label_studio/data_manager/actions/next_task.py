@@ -17,17 +17,16 @@ logger = logging.getLogger(__name__)
 
 
 def create_new_task():
-
-    # print("BEGIN CREATE NEW PROJECT")
     python_file = 'C:\\Users\\nsf2023\\repos\\landcoveranalysis\\insertCyclingAnnotationTasks.py'
-    annotatedPath = "C:\\Users\\nsf2023\\repos\\completedPath\\"
-    imagePath = "C:\\Users\\nsf2023\\repos\\imagePath\\"
+
     # Call the function in Python file as a subprocess
-    os.system(f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file} {annotatedPath} {imagePath}")
-    # create_new_task_in_file {str(project.id)}")
 
-
-
+    # ret = 0 if subprocess is successful
+    exitCode = os.system(f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file}")
+    areMoreTasks = True
+    if exitCode == 5:
+        areMoreTasks = False
+    return areMoreTasks
 
 def next_task(project, queryset, **kwargs):
     """ Generate next task for labeling stream
@@ -41,19 +40,16 @@ def next_task(project, queryset, **kwargs):
     dm_queue = filters_ordering_selected_items_exist(request.data)
 
     next_task, queue_info = get_next_task(request.user, queryset, project, dm_queue)
-
-
     if next_task is None:
+        areMoreTasks = create_new_task()
+        if areMoreTasks:
+            next_task, queue_info = get_next_task(request.user, queryset, project, dm_queue)
+        else:
+            raise NotFound(
+            f' There are still some tasks to complete for the user={request.user}, '
+            f'but they seem to be locked by another user.')
 
-        create_new_task()
-
-        next_task, queue_info = get_next_task(request.user, queryset, project, dm_queue)
-
-        # raise NotFound(
-        #      f' There are still some tasks to complete for the user={request.user}, '
-        #      f'but they seem to be locked by another user.')
-
-        # serialize task
+    # serialize task
     context = {'request': request, 'project': project, 'resolve_uri': True, 'annotations': False}
     serializer = NextTaskSerializer(next_task, context=context)
     response = serializer.data
