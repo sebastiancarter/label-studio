@@ -376,7 +376,7 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
 
     # TODO fix this hard coded way to insert our python to ls
     def updateXMLconfig(self):
-        python_file = 'C:\\Users\\nsf2023\\repos\\landcoveranalysis\\insertXML.py'
+        python_file = 'C:\\Users\\nsf2023\\repos\\landcoveranalysis\\updateProject.py'
         # Call the function in Python file as a subprocess
         os.system(f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file}")
 
