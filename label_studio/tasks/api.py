@@ -376,10 +376,11 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
 
     # TODO fix this hard coded way to insert our python to ls
     def updateXMLconfig(self):
-        python_file = 'C:\\Users\\nsf2023\\repos\\landcoveranalysis\\updateProject.py'
+        python_file = "/Users/sebca/PycharmProjects/research/" + "landcoveranalysis" + os.sep + "updateProject.py"
         # Call the function in Python file as a subprocess
-        os.system(f"C:\\Users\\nsf2023\\.conda\\envs\\researchEnv\\python.exe {python_file}")
-
+	    # TODO: change this!
+        os.system(f"/opt/homebrew/Caskroom/miniconda/base/envs/mixedint/bin/python {python_file}")
+        
     def perform_create(self, ser):
 
         task = self.get_parent_object()
