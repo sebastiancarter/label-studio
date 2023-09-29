@@ -1,5 +1,6 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
+
 import logging
 import os
 from django.db import transaction
@@ -374,13 +375,24 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
     def delete_draft(self, draft_id, annotation_id):
         return AnnotationDraft.objects.filter(id=draft_id).delete()
 
-    # TODO fix this hard coded way to insert our python to ls
+    def pathGetter(self):
+        assert os.path.exists("paths.txt")
+        pathFile = open("paths.txt", 'r')
+        pathList = []
+        for line in pathFile:
+            pathList.append(line)
+        pathFile.close()
+        python_file = pathList[0]
+        LCAenvPath = pathList[1]
+        return LCAenvPath, python_file
+
     def updateXMLconfig(self):
-        python_file = "/Users/sebca/PycharmProjects/research/" + "landcoveranalysis" + os.sep + "updateProject.py"
+        LCAenvPath, python_file = self.pathGetter()
         # Call the function in Python file as a subprocess
-	    # TODO: change this!
-        os.system(f"/opt/homebrew/Caskroom/miniconda/base/envs/mixedint/bin/python {python_file}")
-        
+        os.system(f"{LCAenvPath} {python_file}")
+
+
+
     def perform_create(self, ser):
 
         task = self.get_parent_object()

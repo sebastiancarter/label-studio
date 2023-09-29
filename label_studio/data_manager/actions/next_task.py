@@ -15,16 +15,24 @@ from tasks.models import Task
 
 logger = logging.getLogger(__name__)
 
+assert os.path.exsist("paths.txt")
+pathFile = open("paths.txt", 'r')
+# reading in the paths
+# 0 is the cycling annotations file
+# 1 is the python file for land cover analysis conda env
+pathList = []
+for line in pathFile:
+    pathList.append(line)
+pathFile.close()
+python_file = pathList[0]
+LCAenvPath = pathList[1]
+assert os.path.exists(python_file)
+assert os.path.exists(LCAenvPath)
 
 def create_new_task():
-    # TODO make this not hardcoded
-    python_file = "/Users/sebca/PycharmProjects/research/landcoveranalysis" + os.sep + "insertCyclingAnnotationTasks.py"
-    assert os.path.exists(python_file)
     # Call the function in Python file as a subprocess
 
-    # TODO make this not hardcoded
-    assert os.path.exists("/opt/homebrew/Caskroom/miniconda/base/envs/mixedint/bin/python")
-    exitCode = os.system(f"/opt/homebrew/Caskroom/miniconda/base/envs/mixedint/bin/python {python_file}")
+    exitCode = os.system(f"{LCAenvPath} {python_file}")
     areMoreTasks = True
     if os.WIFEXITED(exitCode):
         realStatus = os.WEXITSTATUS(exitCode)
