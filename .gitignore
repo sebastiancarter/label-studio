@@ -76,3 +76,5 @@ docker-compose.override.yml
 .viminfo
 .bash_history
 
+# paths file
+paths.txt

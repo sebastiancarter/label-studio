@@ -15,24 +15,26 @@ from tasks.models import Task
 
 logger = logging.getLogger(__name__)
 
-assert os.path.exsist("paths.txt")
-pathFile = open("paths.txt", 'r')
+pathFilePath = "label_studio" + os.sep + "data_manager" + os.sep + "actions" + os.sep + "paths.txt"
+assert os.path.exists(pathFilePath)
+pathFile = open(pathFilePath, 'r')
 # reading in the paths
 # 0 is the cycling annotations file
 # 1 is the python file for land cover analysis conda env
 pathList = []
 for line in pathFile:
-    pathList.append(line)
+    pathList.append(line.strip())
 pathFile.close()
-python_file = pathList[0]
+cycAnn_file = pathList[0]
 LCAenvPath = pathList[1]
-assert os.path.exists(python_file)
 assert os.path.exists(LCAenvPath)
+assert os.path.exists(cycAnn_file)
+
 
 def create_new_task():
     # Call the function in Python file as a subprocess
 
-    exitCode = os.system(f"{LCAenvPath} {python_file}")
+    exitCode = os.system(f"{LCAenvPath} {cycAnn_file}")
     areMoreTasks = True
     if os.WIFEXITED(exitCode):
         realStatus = os.WEXITSTATUS(exitCode)

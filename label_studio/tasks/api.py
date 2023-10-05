@@ -376,11 +376,12 @@ class AnnotationsListAPI(GetParentObjectMixin, generics.ListCreateAPIView):
         return AnnotationDraft.objects.filter(id=draft_id).delete()
 
     def pathGetter(self):
-        assert os.path.exists("paths.txt")
-        pathFile = open("paths.txt", 'r')
+        pathFilePath = "label_studio" + os.sep + "tasks" + os.sep + "paths.txt"
+        assert os.path.exists(pathFilePath)
+        pathFile = open(pathFilePath, 'r')
         pathList = []
         for line in pathFile:
-            pathList.append(line)
+            pathList.append(line.strip())
         pathFile.close()
         python_file = pathList[0]
         LCAenvPath = pathList[1]
