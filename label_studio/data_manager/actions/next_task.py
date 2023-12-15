@@ -36,13 +36,16 @@ def create_new_task():
 
     exitCode = os.system(f"{LCAenvPath} {cycAnn_file}")
     areMoreTasks = True
-    if os.WIFEXITED(exitCode):
-        realStatus = os.WEXITSTATUS(exitCode)
-        print(realStatus)
+    try:
+        if os.WIFEXITED(exitCode):
+            realStatus = os.WEXITSTATUS(exitCode)
+            print(realStatus)
+    except AttributeError:
+        realStatus = exitCode
 
-        if realStatus == 5:
-            areMoreTasks = False
-        return areMoreTasks
+    if realStatus == 5:
+        areMoreTasks = False
+    return areMoreTasks
 
 def next_task(project, queryset, **kwargs):
     """ Generate next task for labeling stream
