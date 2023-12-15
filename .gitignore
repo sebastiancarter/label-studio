@@ -78,3 +78,5 @@ docker-compose.override.yml
 
 # paths file
 paths.txt
+
+image_regressor/
