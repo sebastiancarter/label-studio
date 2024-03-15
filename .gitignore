@@ -80,3 +80,4 @@ docker-compose.override.yml
 paths.txt
 
 image_regressor/
+serverRun.sh

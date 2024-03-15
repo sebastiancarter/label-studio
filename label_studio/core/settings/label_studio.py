@@ -20,8 +20,8 @@ LOGGING['root']['level'] = get_env('LOG_LEVEL', 'WARNING')
 DEBUG = get_bool_env('DEBUG', False)
 
 DEBUG_PROPAGATE_EXCEPTIONS = get_bool_env('DEBUG_PROPAGATE_EXCEPTIONS', False)
-
-SESSION_COOKIE_SECURE = get_bool_env('SESSION_COOKIE_SECURE', False)
+# testing to see if changing this to true works
+SESSION_COOKIE_SECURE = get_bool_env('SESSION_COOKIE_SECURE', True)
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
