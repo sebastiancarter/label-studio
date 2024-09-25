@@ -115,7 +115,7 @@ DEBUG_MODAL_EXCEPTIONS = get_bool_env('DEBUG_MODAL_EXCEPTIONS', False)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Base path for media root and other uploaded files
-BASE_DATA_DIR = "/home/sjc7/research/label-studio-data//label-studio"
+BASE_DATA_DIR = "/home/sjc7/research/label-studio-data/label-studio"
 os.makedirs(BASE_DATA_DIR, exist_ok=True)
 logger.info('=> Database and media directory: %s', BASE_DATA_DIR)
 
@@ -531,10 +531,13 @@ def project_delete(project):
 
 
 
+emailList = ["sjc3@hawaii.edu", "mbierman3@hawaii.edu"]
+
 def user_auth(user_model, email, password):
-    emailList = ["sjc3@hawaii.edu", "klindiwe2024@hawaii.edu"]
-    assert(email in emailList)
-    return None
+    if email not in emailList:
+        return False
+    else:
+        return True
 
 
 def collect_versions_dummy(**kwargs):

@@ -45,7 +45,12 @@ def user_signup(request):
     organization_form = OrganizationSignupForm()
 
     if user.is_authenticated:
-        return redirect(next_page)
+        if settings.HOSTNAME:
+            redirect_url = settings.HOSTNAME
+            if not redirect_url.endswith('/'):
+                redirect_url += '/'
+            return redirect(redirect_url)
+        return redirect('/')
 
     # make a new user
     if request.method == 'POST':

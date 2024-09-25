@@ -39,10 +39,11 @@ class LoginForm(forms.Form):
         password = cleaned.get('password', '')
         if len(email) >= EMAIL_MAX_LENGTH:
             raise forms.ValidationError('Email is too long')
+        
+        if not settings.USER_AUTH(User, email, password):
+            raise forms.ValidationError('user not authorized')
 
-        # advanced way for user auth
-        user = settings.USER_AUTH(User, email, password)
-
+        user = None
         # regular access
         if user is None:
             user = auth.authenticate(email=email, password=password)
@@ -77,7 +78,10 @@ class UserSignupForm(forms.Form):
         email = self.cleaned_data.get('email').lower()
         if len(email) >= EMAIL_MAX_LENGTH:
             raise forms.ValidationError('Email is too long')
-
+        # this prevents people from signing up that shouldn't be
+        # a lil hack-y will change eventually
+        if not settings.USER_AUTH("", email, ""):
+            raise forms.ValidationError('You aren\'t authorized to sign up')
         if email and User.objects.filter(email=email).exists():
             raise forms.ValidationError('User with this email already exists')
 
